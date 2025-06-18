@@ -23,7 +23,8 @@ interface WingData {
 const AttendanceReportGenerator = () => {
   const [date, setDate] = useState('');
   const [dayNight, setDayNight] = useState('দিনের বেলায়');
-  const [incharge, setIncharge] = useState('এ.আর -সেকশন-');
+  const [arName, setArName] = useState('');
+  const [section, setSection] = useState('১');
   const [mobile, setMobile] = useState('');
   const [schedule, setSchedule] = useState('0013(M)');
   const [wingsData, setWingsData] = useState<WingData[]>([
@@ -74,8 +75,8 @@ const AttendanceReportGenerator = () => {
   };
 
   const generateReport = () => {
-    if (!incharge.trim() || !mobile.trim() || !schedule.trim()) {
-      toast.error('অনুগ্রহ করে ইনচার্জের নাম, মোবাইল নম্বর ও সিডিউল উইংসের নাম দিন।');
+    if (!arName.trim() || !mobile.trim() || !schedule.trim()) {
+      toast.error('অনুগ্রহ করে এ.আর এর নাম, মোবাইল নম্বর ও সিডিউল উইংসের নাম দিন।');
       return;
     }
 
@@ -88,6 +89,7 @@ const AttendanceReportGenerator = () => {
     });
 
     const totalBangla = toBanglaNumber(total);
+    const inchargeName = `এ.আর ${arName} -${section} সেকশন-`;
 
     const report = `${date} 
 সিডিউল ও বিশেষ গোলামীতে ${dayNight} সকল উইংস এর মোট জন উপস্থিত আছেন।
@@ -96,7 +98,7 @@ ${wingsOutput}-----------------------------------------
 মোট------------=    ${totalBangla} জন
 
 বাবে রহমতে ইনচার্জ:-  
-${incharge}  
+${inchargeName}  
 মোবা: ${mobile}
 
 আজকের বিশেষ গোলামির ভুল বেয়াদবির জন্য ইমাম প্রফেসর ডক্টর কুদরত এ খোদা (মা.আ.) হুজুরের নূরময় কদম মোবারকে দয়া ও ভিক্ষা চাই 🙏🙏  
@@ -179,21 +181,41 @@ ${incharge}
               </div>
 
               <div>
-                <Label htmlFor="incharge" className="text-blue-700 font-semibold flex items-center gap-2">
+                <Label htmlFor="arName" className="text-blue-700 font-semibold flex items-center gap-2">
                   <Users className="h-4 w-4" />
-                  ইনচার্জের নাম:
+                  এ.আর এর নাম:
                 </Label>
                 <Input
-                  id="incharge"
-                  value={incharge}
-                  onChange={(e) => setIncharge(e.target.value)}
+                  id="arName"
+                  value={arName}
+                  onChange={(e) => setArName(e.target.value)}
+                  placeholder="নাম লিখুন"
                   className="font-bangla text-lg mt-2"
                 />
               </div>
 
               <div>
+                <Label htmlFor="section" className="text-blue-700 font-semibold">
+                  সেকশন নির্বাচন করুন:
+                </Label>
+                <Select value={section} onValueChange={setSection}>
+                  <SelectTrigger className="mt-2 font-bangla">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="১" className="font-bangla">১</SelectItem>
+                    <SelectItem value="২" className="font-bangla">২</SelectItem>
+                    <SelectItem value="৩" className="font-bangla">৩</SelectItem>
+                    <SelectItem value="৪" className="font-bangla">৪</SelectItem>
+                    <SelectItem value="৫" className="font-bangla">৫</SelectItem>
+                    <SelectItem value="৬" className="font-bangla">৬</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div>
                 <Label htmlFor="mobile" className="text-blue-700 font-semibold">
-                  ইনচার্জের মোবাইল নম্বর:
+                  মোবাইল নম্বর:
                 </Label>
                 <Input
                   id="mobile"
@@ -231,29 +253,43 @@ ${incharge}
               </div>
               
               <div className="max-h-80 overflow-y-auto space-y-3 bg-gray-50 p-4 rounded-lg">
-                {wingsData.map((wing, index) => (
-                  <div key={index} className="flex items-center gap-3">
-                    <span className="font-bangla font-medium min-w-20">{wing.name}</span>
-                    <span className="font-bangla">=</span>
-                    <Input
-                      type="text"
-                      value={toBanglaNumber(wing.count)}
-                      onChange={(e) => handleWingCountChange(index, e.target.value)}
-                      className="w-20 text-center font-bangla"
-                    />
-                    <span className="font-bangla">জন</span>
-                    {wingsData.length > 1 && (
-                      <Button
-                        onClick={() => removeWing(index)}
-                        variant="outline"
-                        size="sm"
-                        className="text-red-600 hover:text-red-700"
-                      >
-                        ×
-                      </Button>
-                    )}
-                  </div>
-                ))}
+                {wingsData.map((wing, index) => {
+                  const isScheduleWing = wing.name === schedule;
+                  return (
+                    <div key={index} className={`flex items-center gap-3 p-3 rounded-lg ${
+                      isScheduleWing 
+                        ? 'bg-green-100 border-2 border-green-400 shadow-md' 
+                        : 'bg-white border border-gray-200'
+                    }`}>
+                      <div className="flex flex-col">
+                        <span className="font-bangla font-medium min-w-20">{wing.name}</span>
+                        {isScheduleWing && (
+                          <span className="text-green-600 text-sm font-bold flex items-center gap-1">
+                            ⭐ এই উইংসের সিডিউল আজকে
+                          </span>
+                        )}
+                      </div>
+                      <span className="font-bangla">=</span>
+                      <Input
+                        type="text"
+                        value={toBanglaNumber(wing.count)}
+                        onChange={(e) => handleWingCountChange(index, e.target.value)}
+                        className="w-20 text-center font-bangla"
+                      />
+                      <span className="font-bangla">জন</span>
+                      {wingsData.length > 1 && (
+                        <Button
+                          onClick={() => removeWing(index)}
+                          variant="outline"
+                          size="sm"
+                          className="text-red-600 hover:text-red-700"
+                        >
+                          ×
+                        </Button>
+                      )}
+                    </div>
+                  );
+                })}
               </div>
             </div>
           </div>
