@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -74,6 +73,18 @@ const AttendanceReportGenerator = () => {
     }
   };
 
+  const generateSectionOptions = () => {
+    const options = [];
+    for (let i = 1; i <= 40; i++) {
+      options.push(
+        <SelectItem key={i} value={toBanglaNumber(i)} className="font-bangla">
+          {toBanglaNumber(i)}
+        </SelectItem>
+      );
+    }
+    return options;
+  };
+
   const generateReport = () => {
     if (!arName.trim() || !mobile.trim() || !schedule.trim()) {
       toast.error('অনুগ্রহ করে এ.আর এর নাম, মোবাইল নম্বর ও সিডিউল উইংসের নাম দিন।');
@@ -85,7 +96,13 @@ const AttendanceReportGenerator = () => {
     let wingsOutput = '';
     wingsData.forEach(wing => {
       const formattedCount = toBanglaTwoDigit(wing.count);
-      wingsOutput += `উইংস ${wing.name} =  ${formattedCount} জন\n`;
+      const isScheduleWing = wing.name === schedule;
+      
+      if (isScheduleWing) {
+        wingsOutput += `⭐ উইংস ${wing.name} =  ${formattedCount} জন (আজকের সিডিউল)\n`;
+      } else {
+        wingsOutput += `উইংস ${wing.name} =  ${formattedCount} জন\n`;
+      }
     });
 
     const totalBangla = toBanglaNumber(total);
@@ -196,19 +213,14 @@ ${inchargeName}
 
               <div>
                 <Label htmlFor="section" className="text-blue-700 font-semibold">
-                  সেকশন নির্বাচন করুন:
+                  সেকশন নির্বাচন করুন (১-৪০):
                 </Label>
                 <Select value={section} onValueChange={setSection}>
                   <SelectTrigger className="mt-2 font-bangla">
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="১" className="font-bangla">১</SelectItem>
-                    <SelectItem value="২" className="font-bangla">২</SelectItem>
-                    <SelectItem value="৩" className="font-bangla">৩</SelectItem>
-                    <SelectItem value="৪" className="font-bangla">৪</SelectItem>
-                    <SelectItem value="৫" className="font-bangla">৫</SelectItem>
-                    <SelectItem value="৬" className="font-bangla">৬</SelectItem>
+                  <SelectContent className="max-h-60 overflow-y-auto">
+                    {generateSectionOptions()}
                   </SelectContent>
                 </Select>
               </div>
