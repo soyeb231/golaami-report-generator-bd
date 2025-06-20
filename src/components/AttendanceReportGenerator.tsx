@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -309,13 +308,16 @@ developer By MD SOYEB 27`;
             </div>
           </div>
 
-          <div className="flex justify-center">
+          <div className="flex flex-col items-center space-y-3">
             <Button 
               onClick={generateReport}
               className="bg-gradient-to-r from-blue-600 to-green-600 hover:from-blue-700 hover:to-green-700 text-white px-8 py-3 text-lg font-bangla shadow-lg"
             >
               ✍ রিপোর্ট তৈরি করুন
             </Button>
+            <p className="text-sm text-gray-600 font-semibold">
+              © MD SOYEB 27
+            </p>
           </div>
         </CardContent>
       </Card>
