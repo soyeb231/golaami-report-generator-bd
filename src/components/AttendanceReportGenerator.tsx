@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -106,7 +107,7 @@ const AttendanceReportGenerator = () => {
     });
 
     const totalBangla = toBanglaNumber(total);
-    const inchargeName = `এ.আর ${arName} -${section} সেকশন-`;
+    const inchargeName = `এ.আর ${arName} সেকশন- ${section}`;
 
     const report = `${date} 
 সিডিউল ও বিশেষ গোলামীতে ${dayNight} সকল উইংস এর মোট জন উপস্থিত আছেন।
