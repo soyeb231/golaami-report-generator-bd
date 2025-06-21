@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -313,9 +314,22 @@ ${inchargeName}
             >
               ✍ রিপোর্ট তৈরি করুন
             </Button>
-            <p className="text-sm text-gray-600 font-semibold">
-              © MD SOYEB 27
-            </p>
+            <div className="text-center space-y-1">
+              <p 
+                className="text-sm text-blue-600 font-semibold cursor-pointer hover:text-blue-800 transition-colors"
+                onClick={() => {
+                  const website = prompt('আপনার ওয়েবসাইটের লিংক দিন:', 'https://');
+                  if (website) {
+                    window.open(website, '_blank');
+                  }
+                }}
+              >
+                © 2024 MD SOYEB- সকল অধিকার সংরক্ষিত
+              </p>
+              <p className="text-xs text-gray-600">
+                উপস্থিতি রিপোর্ট জেনারেটর - সহজ ও কার্যকর সমাধান
+              </p>
+            </div>
           </div>
         </CardContent>
       </Card>
